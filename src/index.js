@@ -1,5 +1,6 @@
 // import * as THREE from "three";
 import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 function main() {
     // Canvas/renderer setup
@@ -26,6 +27,7 @@ function main() {
 
     console.log(geometry);
 
+    // Returns a mesh with a given geometry, colour and x axis offset
     function makeInstance(geometry, color, x) {
         const material = new THREE.MeshPhongMaterial({ color });
 
@@ -38,9 +40,9 @@ function main() {
     }
 
     const cubes = [
-        makeInstance(geometry, 0x44aa88, 0),
-        makeInstance(geometry, 0x8844aa, -2),
-        makeInstance(geometry, 0xaa8844, 2),
+        makeInstance(geometry, 0xeb1809, 0),
+        makeInstance(geometry, 0xfcef32, -2),
+        makeInstance(geometry, 0xf021ff, 2),
     ];
 
     // Create a light source
@@ -53,8 +55,27 @@ function main() {
     function render(time) {
         time *= 0.001; // convert time to seconds
 
+        function resizeRendererToDisplaySize(renderer) {
+            const canvas = renderer.domElement;
+            const pixelRatio = window.devicePixelRatio;
+            const width = (canvas.clientWidth * pixelRatio) | 0;
+            const height = (canvas.clientHeight * pixelRatio) | 0;
+            const needResize =
+                canvas.width !== width || canvas.height !== height;
+            if (needResize) {
+                renderer.setSize(width, height, false);
+            }
+            return needResize;
+        }
+
+        if (resizeRendererToDisplaySize(renderer)) {
+            const canvas = renderer.domElement;
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+        }
+
         cubes.forEach((cube, ndx) => {
-            const speed = 1 + ndx * 0.1;
+            const speed = 0.5 + ndx * 0.1;
             const rot = time * speed;
             cube.rotation.x = rot;
             cube.rotation.y = rot;
